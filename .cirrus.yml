@@ -12,13 +12,13 @@ env:
     TARGET: bacon
     EXTRA_CMD: export SKIP_ABI_CHECKS=true
     LUNCH_COMBO: aosp_"$DEVICE"-userdebug
-    OUTPUT: PixelExperience*.zip
+    OUTPUT: CRDROID*.zip
 
 task:
   name: "Setting Up, Syncing, Building and Uploading..."
   timeout_in: 240m  
   container:
-      image: ubuntu:20.04
+      image: apon77/aosp:latest
       cpu: 8
       memory: 32G
         
@@ -51,11 +51,10 @@ task:
       - echo "============================"
       - mkdir -p ~/work
       - cd ~/work
-      - repo init -u $MANIFEST
-      - repo sync -j31 --force-sync --no-tags --no-clone-bundle
-      - git clone $DT_LINK $DT_PATH
-      - git clone $VT_LINK $VT_PATH
-      - git clone $KT_LINK $KT_PATH
+      - repo init --depth=1 --no-repo-verify -u git://github.com/crdroidandroid/android.git -b 10.0 -g default,-mips,-darwin,-notdefault
+      - repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
+      - git clone https://github.com/horoidrom/m01q device/samsung/m01q
+      - git clone https://github.com/horoidrom/439-com device/samsung/sdm439-common
       - echo "============================"
       - echo "Syncing Complete!"
       - echo "============================"
